@@ -1,6 +1,6 @@
-## Author: Tim Day
-## Project: SDMAY1932 Hardware Synthesizer
-## Matlab algorithm for Mixer
+%% Author: Tim Day
+%% Project: SDMAY1932 Hardware Synthesizer
+%% Matlab algorithm for Mixer
 
 
 R1 = 1000; %first Attenuator
