@@ -1,0 +1,114 @@
+// Author: Tim Day
+// Project: SDMAY1932 Hardware Synthesizer
+// Algorithm for the mixer
+
+#include <Wire.h>
+
+//constants
+#define W0 A0 //controls digipot 0
+#define W1 A1 //controls digipot 1 
+
+int incomingByte = 0;
+int done = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+ Serial.begin(9600);
+ 
+
+
+}
+
+void loop() {
+   while(done == 0){
+  // Circuit Constants
+  int R1 = 1000; //first Attenuator
+  int rStep = round(10000/255);
+  int RM = 1000;  //Mixer Circuit
+
+  int i = 0;
+  
+
+  //Osc1 Vars
+  double pOsc1 = 0;
+  double resOsc1 = 0;
+  double ComOsc1 = 0;
+  double voutOsc1 = 0;
+
+  //Osc2 Vars
+  double pOsc2 = 0;
+  double resOsc2 = 0;
+  double ComOsc2 = 0;
+  double voutOsc2 = 0;
+
+//ADDING THESE IS TRIVIAL NEED TO FIGURE OUT Digi-Pod
+  //Noise Vars
+  double pNoise = 0;
+  double resNoise = 0;
+  double ComOsc2 = 0;
+  double voutOsc2 = 0;
+
+  //Ext1 Vars
+  double pExt1 = 0;
+  double resExt1 = 0;
+  double ComExt1 = 0;
+  double voutExt1 = 0;
+  
+ 
+  //Set Oscillator 1
+  Serial.print("Percentage for Osc1\n");
+  while(i == 0){
+  if(Serial.available()>0){
+  pOsc1 = Serial.read();   
+  pOsc1 = (pOsc1 - 48)*10;
+  Serial.print("I received: ");
+  Serial.println(pOsc1, DEC);
+  delay(1000);
+  
+    //Osc1 Algorithm 
+  pOsc1 = pOsc1/100 *0.9;              //percentage of Osc1 scaled to high being 90 percent
+  resOsc1 = (pOsc1*R1)/(1-pOsc1);     //attenuator adjustment
+  ComOsc1 = resOsc1/rStep;            //divides by voltage steps
+  ComOsc1 = round(ComOsc1);
+  resOsc1 = ComOsc1*39;                //actual resistance
+  voutOsc1 = resOsc1/(R1 + resOsc1);  //output for later calculation
+  Serial.println(ComOsc1, DEC);
+  Serial.println(pOsc1, DEC);
+  Serial.println(resOsc1, DEC);
+  Serial.println(voutOsc1, DEC);
+  i++;
+  }
+  }
+  i = 0;
+
+  //Set Oscillator 2
+  Serial.print("Percentage for Osc2\n");
+  while(i == 0){
+  if(Serial.available()>0){
+  pOsc2 = Serial.read();   
+  pOsc2 = (pOsc2 - 48)*10;
+  Serial.print("I received: ");
+  Serial.println(pOsc2, DEC);
+  delay(1000);
+  
+    //Osc2 Algorithm 
+  pOsc2 = pOsc2/100 *0.9;              //percentage of Osc1 scaled to high being 90 percent
+  resOsc2 = (pOsc2*R1)/(1-pOsc2);     //attenuator adjustment
+  ComOsc2 = resOsc2/rStep;            //divides by voltage steps
+  ComOsc2 = round(ComOsc2);
+  resOsc2 = ComOsc2*39;                //actual resistance
+  voutOsc2 = resOsc2/(R1 + resOsc2);  //output for later calculation
+  Serial.println(ComOsc2, DEC);
+  Serial.println(pOsc2, DEC);
+  Serial.println(resOsc2, DEC);
+  Serial.println(voutOsc2, DEC);
+  i++;
+  }
+  }
+
+
+  
+  done = 1;
+  delay(100);
+  }
+ }
