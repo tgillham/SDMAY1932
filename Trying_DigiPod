@@ -1,0 +1,31 @@
+#include <Wire.h>
+
+#define SCL A5
+#define SDA A4
+// trim pot wiper read into anlog pins
+#define W0 A0 //controls digipot 0
+#define W1 A1 //controls digipot 1 
+#define W2 A3 //controls both digipots
+
+
+void setup() {
+  Wire.begin(); // join i2c bus (address optional for master)
+  Serial.begin(9600);
+}
+
+byte val = 20;
+
+void loop() {
+  Wire.beginTransmission(0x28); // transmit to device #44 (0x2c)
+  // device address is specified in datasheet
+  Wire.write(0xAA);            // sends instruction byte
+  Wire.write(val);             // sends potentiometer value byte
+  Wire.endTransmission();     // stop transmitting
+  Serial.println(val);
+  val++;        // increment value
+  if (val == 64) { // if reached 64th position (max)
+    val = 0;    // start over from lowest value
+  }
+  
+  delay(500);
+  
